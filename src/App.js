@@ -32,7 +32,8 @@ function App() {
     const myTodo = {
       sno: sno,
       title: title,
-      desc: desc
+      desc: desc,
+      date: "Created on " + String(new Date()).substring(0,24)
     }
     setTodos([...todos, myTodo]);
   }
@@ -44,11 +45,12 @@ function App() {
   
   const change = (todo, title, desc) => {
     setTodos(todos.map((e) => {
-      if(e === todo){
+      if(e === todo && (todo.title !== title || todo.desc !== desc)){
         return {
           sno:todo.sno,
           title:title,
-          desc:desc
+          desc:desc,
+          date:"last edited on " + String(new Date()).substring(0,24)
         }
       }
       return e;
