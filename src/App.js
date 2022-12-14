@@ -1,6 +1,6 @@
 import './App.css';
 import Header from './MyComponents/Header';
-import Home from './Home';
+import Home from './MyComponents/Home';
 import { Footer } from './MyComponents/Footer';
 import About from './MyComponents/About';
 import React, { useState, useEffect } from 'react';
@@ -24,6 +24,21 @@ function App() {
     localStorage.setItem("todos", JSON.stringify(todos));
   }
 
+  const onCheck = (todo) => {
+    setTodos(todos.map((e) => {
+      if(e === todo){
+        return {
+          sno:todo.sno,
+          title:todo.title,
+          desc:todo.desc,
+          date:todo.date,
+          completed:!todo.completed 
+        }
+      }
+      return e;
+    }))
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }
 
   const addTodo = (title, desc) => {
     let sno;
@@ -33,7 +48,8 @@ function App() {
       sno: sno,
       title: title,
       desc: desc,
-      date: "Created on " + String(new Date()).substring(0,24)
+      date: "Created on " + String(new Date()).substring(0,24),
+      completed:false
     }
     setTodos([...todos, myTodo]);
   }
@@ -50,7 +66,8 @@ function App() {
           sno:todo.sno,
           title:title,
           desc:desc,
-          date:"last edited on " + String(new Date()).substring(0,24)
+          date:"last edited on " + String(new Date()).substring(0,24),
+          completed:todo.completed
         }
       }
       return e;
@@ -63,7 +80,7 @@ function App() {
         <Header title="Todos List" searchBar={false} />
         <Routes>
           <Route path='/Todos-list/about' element={<About/>} />
-          <Route path='/Todos-list' element={<Home addTodo={addTodo} todos={todos} onDelete={onDelete} change={change} />} />
+          <Route path='/Todos-list' element={<Home addTodo={addTodo} todos={todos} onDelete={onDelete} onCheck={onCheck} change={change} />} />
         </Routes>
         <Footer />
       </Router>

@@ -1,8 +1,18 @@
-import React from "react";
+import React, {useEffect} from "react";
 import ProtoTypes from "prop-types";
 import { Link } from "react-router-dom";
 
 export default function Header(props) {
+  const changeClass = (name) => {
+    document.getElementById('home').className = "nav-link";
+    document.getElementById('about').className = "nav-link";
+    document.getElementById(name).className = "nav-link active";
+  }
+
+  useEffect(() => {
+    if(window.location.href.endsWith('about')) changeClass('about');
+  }, [props])
+  
   return (
     <nav className="navbar navbar-expand-lg bg-light">
       <div className="container-fluid">
@@ -23,12 +33,12 @@ export default function Header(props) {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <Link className="nav-link active" aria-current="page" to="/Todos-list">
+              <Link id="home" onClick = {() => changeClass('home')} className="nav-link active" aria-current="page" to="/Todos-list">
                 Home
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="Todos-list/about">
+              <Link id="about" onClick = {() => changeClass('about')} className="nav-link" to="Todos-list/about">
                 About
               </Link>
             </li>

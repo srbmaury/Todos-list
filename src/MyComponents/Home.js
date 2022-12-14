@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
-import AddTodo from './MyComponents/AddTodo'
-import EditTodo from './MyComponents/EditTodo'
-import Todos from './MyComponents/Todos'
+import AddTodo from './AddTodo'
+import EditTodo from './EditTodo'
+import Todos from './Todos'
 
 const Home = (props) => {
     const [editTodo, setEditTodo] = useState(false);
@@ -22,7 +22,7 @@ const Home = (props) => {
         <>
             <EditTodo editTodo = {editTodo} close = {close} todo={todo} todos={props.todos} change={props.change} />
             <AddTodo addTodo={props.addTodo} />
-            <Todos todos={props.todos} onDelete={props.onDelete} onEdit = {onEdit} />
+            <Todos todos={props.todos} onDelete={props.onDelete} onEdit = {onEdit} onCheck={props.onCheck} />
         </>
     )
 }

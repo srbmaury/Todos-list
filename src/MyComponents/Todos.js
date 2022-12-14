@@ -16,7 +16,7 @@ const Todos = (props) => {
       <div style={todosStyle} className='row'>
         {props.todos.length === 0 ? <p className='container mx-4'>No todos to display</p>:
           props.todos.map((todo, index) => {
-            return <TodoItem todo={todo} onDelete={props.onDelete} onEdit={props.onEdit} key={index} />
+            return <TodoItem todo={todo} onDelete={props.onDelete} onEdit={props.onEdit} onCheck={props.onCheck} key={index} />
           })}
       </div>
     </div>
