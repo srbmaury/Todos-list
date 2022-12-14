@@ -13,7 +13,7 @@ const Todos = (props) => {
       props.todos.map((todo, index)=>{
         return(
           <div key={index}>
-            <TodoItem todo={todo} onDelete = {props.onDelete} />
+            <TodoItem todo={todo} onDelete = {props.onDelete} onEdit = {props.onEdit} />
             <hr />
           </div>
         )

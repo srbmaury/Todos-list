@@ -24,6 +24,7 @@ function App() {
     localStorage.setItem("todos", JSON.stringify(todos));
   }
 
+
   const addTodo = (title, desc) => {
     let sno;
     if (todos.length === 0) sno = 1;
@@ -34,21 +35,33 @@ function App() {
       desc: desc
     }
     setTodos([...todos, myTodo]);
-
   }
   const [todos, setTodos] = useState(initTodo);
 
   useEffect(() => {
     localStorage.setItem("todos", JSON.stringify(todos));
   }, [todos]);
-
+  
+  const change = (todo, title, desc) => {
+    setTodos(todos.map((e) => {
+      if(e === todo){
+        return {
+          sno:todo.sno,
+          title:title,
+          desc:desc
+        }
+      }
+      return e;
+    }))
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }
   return (
     <>
       <Router >
         <Header title="Todos List" searchBar={false} />
         <Routes>
           <Route path='/Todos-list/about' element={<About/>} />
-          <Route path='/Todos-list' element={<Home addTodo={addTodo} todos={todos} onDelete={onDelete} />} />
+          <Route path='/Todos-list' element={<Home addTodo={addTodo} todos={todos} onDelete={onDelete} change={change} />} />
         </Routes>
         <Footer />
       </Router>
