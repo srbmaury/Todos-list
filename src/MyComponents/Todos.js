@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import TodoItem from './TodoItem';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import TodoStats from './TodoStats';
 
 const Todos = ({ todos, onDelete, onEdit, onCheck, onReorder }) => {
   const [filter, setFilter] = useState('all'); // 'all', 'completed', 'pending'
@@ -84,6 +85,7 @@ const Todos = ({ todos, onDelete, onEdit, onCheck, onReorder }) => {
         >Pending</button>
       </div>
 
+      <TodoStats todos={filteredTodos} />
       {/* Drag-and-Drop Todos */}
       <DragDropContext onDragEnd={handleOnDragEnd}>
         <Droppable droppableId="todos" direction="horizontal">
