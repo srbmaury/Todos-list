@@ -11,6 +11,28 @@ import {
 } from 'react-router-dom';
 
 function App() {
+  // Dark mode state
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const savedTheme = localStorage.getItem('theme');
+    return savedTheme === 'dark';
+  });
+
+  // Apply theme on mount and when it changes
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDarkMode]);
+
+  // Toggle dark mode function
+  const toggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode);
+  };
+
   let initTodo;
   if (localStorage.getItem('todos') === null) {
     initTodo = []
@@ -77,7 +99,12 @@ function App() {
   return (
     <>
       <Router >
-        <Header title="Todos List" searchBar={false} />
+        <Header 
+          title="Todos List" 
+          searchBar={false}
+          isDarkMode={isDarkMode}
+          toggleDarkMode={toggleDarkMode}
+        />
         <Routes>
           <Route path='/Todos-list/about' element={<About/>} />
           <Route path='/Todos-list' element={<Home addTodo={addTodo} todos={todos} onDelete={onDelete} onCheck={onCheck} change={change} />} />

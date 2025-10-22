@@ -56,6 +56,15 @@ export default function Header(props) {
               </button>
             </form>
           )}
+          {/* Dark Mode Toggle Button */}
+          <button
+            className="theme-toggle ms-3"
+            onClick={props.toggleDarkMode}
+            aria-label="Toggle dark mode"
+            title={props.isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+          >
+            {props.isDarkMode ? "☀️" : "🌙"}
+          </button>
         </div>
       </div>
     </nav>
@@ -64,9 +73,12 @@ export default function Header(props) {
 
 Header.defaultProps = {
   title: "Your Title Here",
-  // searchBar: true
+  isDarkMode: false,
+  toggleDarkMode: () => {},
 };
 Header.propTypes = {
   title: ProtoTypes.string,
   searchBar: ProtoTypes.bool.isRequired,
+  isDarkMode: ProtoTypes.bool,
+  toggleDarkMode: ProtoTypes.func,
 };
