@@ -96,6 +96,10 @@ function App() {
     }))
     localStorage.setItem("todos", JSON.stringify(todos));
   }
+
+  const onReorder = (reorderedTodos) => {
+    setTodos(reorderedTodos);
+  }
   return (
     <>
       <Router >
@@ -107,7 +111,7 @@ function App() {
         />
         <Routes>
           <Route path='/Todos-list/about' element={<About/>} />
-          <Route path='/Todos-list' element={<Home addTodo={addTodo} todos={todos} onDelete={onDelete} onCheck={onCheck} change={change} />} />
+          <Route path='/Todos-list' element={<Home addTodo={addTodo} todos={todos} onDelete={onDelete} onCheck={onCheck} change={change} onReorder={onReorder} />} />
         </Routes>
         <Footer />
       </Router>
