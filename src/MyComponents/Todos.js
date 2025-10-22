@@ -2,73 +2,48 @@ import React, { useState } from 'react';
 import TodoItem from './TodoItem';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import TodoStats from './TodoStats';
+import TodoSearch from './TodoSearch';
 
 const Todos = ({ todos, onDelete, onEdit, onCheck, onReorder }) => {
   const [filter, setFilter] = useState('all'); // 'all', 'completed', 'pending'
+  const [searchTerm, setSearchTerm] = useState('');
 
   const myStyle = { minHeight: "36vh", margin: "40px auto" };
   const todosStyle = { display: "flex", flexWrap: "wrap", gap: "15px" };
 
-  // Filter todos based on the selected filter
-  const filteredTodos = todos.filter(todo => {
-    if (filter === 'all') return true;
-    if (filter === 'completed') return todo.completed;
-    if (filter === 'pending') return !todo.completed;
-    return true;
-  });
+  // Filter todos based on filter + search
+  const filteredTodos = todos
+    .filter(todo => {
+      if (filter === 'all') return true;
+      if (filter === 'completed') return todo.completed;
+      if (filter === 'pending') return !todo.completed;
+      return true;
+    })
+    .filter(todo => todo.title.toLowerCase().includes(searchTerm.toLowerCase()));
 
   const handleOnDragEnd = (result) => {
-    if (!result.destination) return;
-    if (result.source.index === result.destination.index) return;
+    if (!result.destination || result.source.index === result.destination.index) return;
 
-    // If we're in a filtered view, we need to handle this differently
-    if (filter !== 'all') {
-      // Get the item being moved
-      const movedItem = filteredTodos[result.source.index];
-      
-      // Find the indices in the original todos array
-      const originalSourceIndex = todos.findIndex(t => t.sno === movedItem.sno);
-      
-      // Create a copy of all todos
-      const newTodos = Array.from(todos);
-      
-      // Remove the moved item from its original position
-      newTodos.splice(originalSourceIndex, 1);
-      
-      // Find where to insert in the original array
-      if (result.destination.index === 0) {
-        // Moving to first position in filtered view
-        const firstFilteredItem = filteredTodos[0];
-        const firstOriginalIndex = todos.findIndex(t => t.sno === firstFilteredItem.sno);
-        newTodos.splice(firstOriginalIndex, 0, movedItem);
-      } else if (result.destination.index >= filteredTodos.length - 1) {
-        // Moving to last position in filtered view
-        const lastFilteredItem = filteredTodos[filteredTodos.length - 1];
-        const lastOriginalIndex = todos.findIndex(t => t.sno === lastFilteredItem.sno);
-        newTodos.splice(lastOriginalIndex + 1, 0, movedItem);
-      } else {
-        // Moving somewhere in the middle
-        const targetFilteredItem = filteredTodos[result.destination.index];
-        const targetOriginalIndex = newTodos.findIndex(t => t.sno === targetFilteredItem.sno);
-        newTodos.splice(targetOriginalIndex, 0, movedItem);
-      }
-      
-      onReorder(newTodos);
-    } else {
-      // Simple case: reordering all todos
-      const newTodos = Array.from(todos);
-      const [movedItem] = newTodos.splice(result.source.index, 1);
-      newTodos.splice(result.destination.index, 0, movedItem);
-      onReorder(newTodos);
-    }
-  };  
+    // Reorder logic works with filteredTodos merged back into full todos
+    const movedItem = filteredTodos[result.source.index];
+    const newTodos = todos.filter(t => t.sno !== movedItem.sno);
+
+    const targetIndex = result.destination.index >= filteredTodos.length
+      ? newTodos.length
+      : newTodos.findIndex(t => t.sno === filteredTodos[result.destination.index].sno);
+
+    newTodos.splice(targetIndex, 0, movedItem);
+    onReorder(newTodos);
+  };
 
   return (
     <div className="container" style={myStyle}>
       <h3 className="my-3">Todos List</h3>
 
-      {/* Filter Buttons */}
+      {/* Search + Filter */}
       <div style={{ marginBottom: "15px" }}>
+        <TodoSearch searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+
         <button
           className={`btn btn-sm ${filter === 'all' ? 'btn-primary' : 'btn-outline-primary'} mx-1`}
           onClick={() => setFilter('all')}
@@ -86,6 +61,7 @@ const Todos = ({ todos, onDelete, onEdit, onCheck, onReorder }) => {
       </div>
 
       <TodoStats todos={filteredTodos} />
+
       {/* Drag-and-Drop Todos */}
       <DragDropContext onDragEnd={handleOnDragEnd}>
         <Droppable droppableId="todos" direction="horizontal">
